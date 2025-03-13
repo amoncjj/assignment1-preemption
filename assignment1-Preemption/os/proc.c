@@ -255,6 +255,11 @@ void exit(int code) {
     p->state     = ZOMBIE;
 
     release(&wait_lock);
+    // checkpoint2
+    // 调用sched()之前，确保SSP位被设置（supervisor模式）
+    uint64 x = r_sstatus();
+    x |= SSTATUS_SPP;  // 设置SSP位为1，表示在supervisor模式下运行
+    w_sstatus(x);
 
     sched();
     panic_never_reach();
