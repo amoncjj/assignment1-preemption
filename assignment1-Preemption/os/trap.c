@@ -49,6 +49,13 @@ void kernel_trap(struct ktrapframe *ktf) {
             case SupervisorTimer:
                 tracef("s-timer interrupt, cycle: %d", r_time());
                 set_next_timer();
+                struct proc *p = curr_proc();
+                if (p != NULL) {  // 确保不是scheduler线程（curr_proc()为NULL）
+                    int saved_inkernel     = mycpu()->inkernel_trap;
+                    mycpu()->inkernel_trap = 0;               // 临时清除inkernel_trap计数器
+                    yield();                                  // 调用yield切换进程
+                    mycpu()->inkernel_trap = saved_inkernel;  // 恢复计数器
+                }
                 // we never preempt kernel threads.
                 break;
             case SupervisorExternal:
