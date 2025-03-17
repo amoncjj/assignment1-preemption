@@ -29,7 +29,8 @@ void kernel_trap(struct ktrapframe *ktf) {
     }
 
     mycpu()->inkernel_trap++;
-
+    uint64 sstatus = r_sstatus();
+    uint64 sepc = r_sepc();
     uint64 cause          = r_scause();
     uint64 exception_code = cause & SCAUSE_EXCEPTION_CODE_MASK;
     if (cause & SCAUSE_INTERRUPT) {
@@ -73,7 +74,8 @@ void kernel_trap(struct ktrapframe *ktf) {
 
     assert(!intr_get());
     assert(mycpu()->inkernel_trap == 1);
-
+    w_sstatus(sstatus);
+    w_sepc(sepc);
     mycpu()->inkernel_trap--;
 
     return;

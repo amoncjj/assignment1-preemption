@@ -2909,7 +2909,7 @@ static void bootcpu_init() {
 
     trap_init();
     80201e58:	00003097          	auipc	ra,0x3
-    80201e5c:	de0080e7          	jalr	-544(ra) # 80204c38 <trap_init>
+    80201e5c:	dec080e7          	jalr	-532(ra) # 80204c44 <trap_init>
     console_init();
     80201e60:	ffffe097          	auipc	ra,0xffffe
     80201e64:	458080e7          	jalr	1112(ra) # 802002b8 <console_init>
@@ -3045,7 +3045,7 @@ static void secondarycpu_init() {
 
     trap_init();
     80201fc8:	00003097          	auipc	ra,0x3
-    80201fcc:	c70080e7          	jalr	-912(ra) # 80204c38 <trap_init>
+    80201fcc:	c7c080e7          	jalr	-900(ra) # 80204c44 <trap_init>
     timer_init();
     80201fd0:	00002097          	auipc	ra,0x2
     80201fd4:	5cc080e7          	jalr	1484(ra) # 8020459c <timer_init>
@@ -3230,7 +3230,7 @@ __noreturn void secondarycpu_entry(int hartid, int mycpuid) {
 
 00000000802021f8 <worker>:
 #define CNT_PER_THR 10000
-#define SLEEP_TIME 500
+#define SLEEP_TIME 50
 
 volatile uint64 count = 0;
 
@@ -3349,7 +3349,7 @@ void worker(uint64 id) {
     8020233c:	00001097          	auipc	ra,0x1
     80202340:	848080e7          	jalr	-1976(ra) # 80202b84 <printf>
             sleepms(SLEEP_TIME);
-    80202344:	1f400513          	li	a0,500
+    80202344:	03200513          	li	a0,50
     80202348:	00002097          	auipc	ra,0x2
     8020234c:	2b8080e7          	jalr	696(ra) # 80204600 <sleepms>
     for (int i = 0; i < CNT_PER_THR; i++) {
@@ -3446,18 +3446,18 @@ void worker(uint64 id) {
 
 
 void init(uint64) {
-    80202464:	f7010113          	addi	sp,sp,-144
-    80202468:	08813023          	sd	s0,128(sp)
-    8020246c:	08113423          	sd	ra,136(sp)
-    80202470:	06913c23          	sd	s1,120(sp)
-    80202474:	07213823          	sd	s2,112(sp)
-    80202478:	07313423          	sd	s3,104(sp)
-    8020247c:	07413023          	sd	s4,96(sp)
-    80202480:	05513c23          	sd	s5,88(sp)
-    80202484:	05613823          	sd	s6,80(sp)
-    80202488:	05713423          	sd	s7,72(sp)
-    8020248c:	05813023          	sd	s8,64(sp)
-    80202490:	09010413          	addi	s0,sp,144
+    80202464:	f5010113          	addi	sp,sp,-176
+    80202468:	0a813023          	sd	s0,160(sp)
+    8020246c:	0a113423          	sd	ra,168(sp)
+    80202470:	08913c23          	sd	s1,152(sp)
+    80202474:	09213823          	sd	s2,144(sp)
+    80202478:	09313423          	sd	s3,136(sp)
+    8020247c:	09413023          	sd	s4,128(sp)
+    80202480:	07513c23          	sd	s5,120(sp)
+    80202484:	07613823          	sd	s6,112(sp)
+    80202488:	07713423          	sd	s7,104(sp)
+    8020248c:	07813023          	sd	s8,96(sp)
+    80202490:	0b010413          	addi	s0,sp,176
     80202494:	00020493          	mv	s1,tp
     push_off();
     80202498:	fffff097          	auipc	ra,0xfffff
@@ -3483,7 +3483,7 @@ void init(uint64) {
     802024d4:	02200593          	li	a1,34
     802024d8:	00003517          	auipc	a0,0x3
     802024dc:	66850513          	addi	a0,a0,1640 # 80205b40 <e_text+0xb40>
-    802024e0:	f9040913          	addi	s2,s0,-112
+    802024e0:	f7040913          	addi	s2,s0,-144
     802024e4:	00000097          	auipc	ra,0x0
     802024e8:	6a0080e7          	jalr	1696(ra) # 80202b84 <printf>
     802024ec:	00090993          	mv	s3,s2
@@ -3494,7 +3494,7 @@ void init(uint64) {
     802024f4:	00000a97          	auipc	s5,0x0
     802024f8:	d04a8a93          	addi	s5,s5,-764 # 802021f8 <worker>
     for (int i = 0; i < NTHREAD; i++) {
-    802024fc:	00800a13          	li	s4,8
+    802024fc:	00f00a13          	li	s4,15
         pids[i]        = create_kthread(worker, i);
     80202500:	00048593          	mv	a1,s1
     80202504:	000a8513          	mv	a0,s5
@@ -3505,7 +3505,7 @@ void init(uint64) {
     80202514:	00148493          	addi	s1,s1,1
     80202518:	00498993          	addi	s3,s3,4
     8020251c:	ff4492e3          	bne	s1,s4,80202500 <init+0x9c>
-    80202520:	02090c13          	addi	s8,s2,32
+    80202520:	03c90c13          	addi	s8,s2,60
     }
     int retcode;
     for (int i = 0; i < NTHREAD; i++) {
@@ -3519,7 +3519,7 @@ void init(uint64) {
     80202538:	63ca8a93          	addi	s5,s5,1596 # 80205b70 <e_text+0xb70>
         int pid = wait(pids[i], &retcode);
     8020253c:	00092503          	lw	a0,0(s2)
-    80202540:	f8c40593          	addi	a1,s0,-116
+    80202540:	f6c40593          	addi	a1,s0,-148
     80202544:	00001097          	auipc	ra,0x1
     80202548:	ce4080e7          	jalr	-796(ra) # 80203228 <wait>
     8020254c:	00050493          	mv	s1,a0
@@ -3540,7 +3540,7 @@ void init(uint64) {
     80202574:	120a0463          	beqz	s4,8020269c <init+0x238>
     80202578:	024a2703          	lw	a4,36(s4)
         infof("thread %d exited with code %d, expected %d", pid, retcode, pid + 20);
-    8020257c:	f8c42883          	lw	a7,-116(s0)
+    8020257c:	f6c42883          	lw	a7,-148(s0)
     80202580:	0144879b          	addiw	a5,s1,20
     80202584:	00f13023          	sd	a5,0(sp)
     80202588:	00048813          	mv	a6,s1
@@ -3618,17 +3618,17 @@ void init(uint64) {
     80202664:	00001097          	auipc	ra,0x1
     80202668:	e30080e7          	jalr	-464(ra) # 80203494 <exit>
 }
-    8020266c:	08813083          	ld	ra,136(sp)
-    80202670:	08013403          	ld	s0,128(sp)
-    80202674:	07813483          	ld	s1,120(sp)
-    80202678:	07013903          	ld	s2,112(sp)
-    8020267c:	06813983          	ld	s3,104(sp)
-    80202680:	06013a03          	ld	s4,96(sp)
-    80202684:	05813a83          	ld	s5,88(sp)
-    80202688:	05013b03          	ld	s6,80(sp)
-    8020268c:	04813b83          	ld	s7,72(sp)
-    80202690:	04013c03          	ld	s8,64(sp)
-    80202694:	09010113          	addi	sp,sp,144
+    8020266c:	0a813083          	ld	ra,168(sp)
+    80202670:	0a013403          	ld	s0,160(sp)
+    80202674:	09813483          	ld	s1,152(sp)
+    80202678:	09013903          	ld	s2,144(sp)
+    8020267c:	08813983          	ld	s3,136(sp)
+    80202680:	08013a03          	ld	s4,128(sp)
+    80202684:	07813a83          	ld	s5,120(sp)
+    80202688:	07013b03          	ld	s6,112(sp)
+    8020268c:	06813b83          	ld	s7,104(sp)
+    80202690:	06013c03          	ld	s8,96(sp)
+    80202694:	0b010113          	addi	sp,sp,176
     80202698:	00008067          	ret
     8020269c:	fff00713          	li	a4,-1
     802026a0:	eddff06f          	j	8020257c <init+0x118>
@@ -5688,7 +5688,7 @@ void scheduler() {
         swtch(&c->sched_context, &p->context);
     80203b44:	05848593          	addi	a1,s1,88
     80203b48:	00001097          	auipc	ra,0x1
-    80203b4c:	120080e7          	jalr	288(ra) # 80204c68 <swtch>
+    80203b4c:	12c080e7          	jalr	300(ra) # 80204c74 <swtch>
 
         // When we get back here, someone must have called swtch(..., &c->sched_context);
         assert(c->proc == p);
@@ -5972,7 +5972,7 @@ void sched() {
     80203e4c:	01050593          	addi	a1,a0,16
     80203e50:	05848513          	addi	a0,s1,88
     80203e54:	00001097          	auipc	ra,0x1
-    80203e58:	e14080e7          	jalr	-492(ra) # 80204c68 <swtch>
+    80203e58:	e20080e7          	jalr	-480(ra) # 80204c74 <swtch>
     mycpu()->interrupt_on = interrupt_on;
     80203e5c:	00000097          	auipc	ra,0x0
     80203e60:	290080e7          	jalr	656(ra) # 802040ec <mycpu>
@@ -6707,8 +6707,8 @@ void timer_init() {
 void set_next_timer() {
     const uint64 timebase = CPU_FREQ / TICKS_PER_SEC;
     set_timer(get_cycle() + timebase);
-    802045bc:	002627b7          	lui	a5,0x262
-    802045c0:	5a078793          	addi	a5,a5,1440 # 2625a0 <_entry-0x7ff9da60>
+    802045bc:	000067b7          	lui	a5,0x6
+    802045c0:	1a878793          	addi	a5,a5,424 # 61a8 <_entry-0x801f9e58>
     802045c4:	00f50533          	add	a0,a0,a5
 }
     802045c8:	01010113          	addi	sp,sp,16
@@ -6725,8 +6725,8 @@ void set_next_timer() {
 }
     802045e4:	00813403          	ld	s0,8(sp)
     set_timer(get_cycle() + timebase);
-    802045e8:	002627b7          	lui	a5,0x262
-    802045ec:	5a078793          	addi	a5,a5,1440 # 2625a0 <_entry-0x7ff9da60>
+    802045e8:	000067b7          	lui	a5,0x6
+    802045ec:	1a878793          	addi	a5,a5,424 # 61a8 <_entry-0x801f9e58>
     802045f0:	00f50533          	add	a0,a0,a5
 }
     802045f4:	01010113          	addi	sp,sp,16
@@ -6762,30 +6762,30 @@ void sleepms(uint64 ms) {
     80204644:	00008067          	ret
 
 0000000080204648 <curr_proc>:
+        // kernel exception, unexpected.
         goto kernel_panic;
     }
 
     assert(!intr_get());
     assert(mycpu()->inkernel_trap == 1);
-
     80204648:	fe010113          	addi	sp,sp,-32
     8020464c:	00113c23          	sd	ra,24(sp)
     80204650:	00813823          	sd	s0,16(sp)
     80204654:	00913423          	sd	s1,8(sp)
     80204658:	02010413          	addi	s0,sp,32
-    mycpu()->inkernel_trap--;
+    w_sstatus(sstatus);
     8020465c:	ffffd097          	auipc	ra,0xffffd
     80204660:	308080e7          	jalr	776(ra) # 80201964 <push_off>
-
+    w_sepc(sepc);
     80204664:	00000097          	auipc	ra,0x0
     80204668:	a88080e7          	jalr	-1400(ra) # 802040ec <mycpu>
-    return;
+    mycpu()->inkernel_trap--;
     8020466c:	00853483          	ld	s1,8(a0)
 
     80204670:	ffffd097          	auipc	ra,0xffffd
     80204674:	368080e7          	jalr	872(ra) # 802019d8 <pop_off>
-kernel_panic:
-    // lock against other cpu, to show a complete panic message.
+    return;
+
     80204678:	01813083          	ld	ra,24(sp)
     8020467c:	01013403          	ld	s0,16(sp)
     80204680:	00048513          	mv	a0,s1
@@ -6826,7 +6826,7 @@ void set_kerneltrap() {
     assert(IS_ALIGNED((uint64)kernel_trap_entry, 4));
     802046d4:	00002897          	auipc	a7,0x2
     802046d8:	98488893          	addi	a7,a7,-1660 # 80206058 <e_text+0x1058>
-    802046dc:	06000813          	li	a6,96
+    802046dc:	06200813          	li	a6,98
     802046e0:	00002797          	auipc	a5,0x2
     802046e4:	9a878793          	addi	a5,a5,-1624 # 80206088 <e_text+0x1088>
     802046e8:	00048693          	mv	a3,s1
@@ -6882,484 +6882,489 @@ void plic_handle() {
 
 000000008020477c <kernel_trap>:
 void kernel_trap(struct ktrapframe *ktf) {
-    8020477c:	fc010113          	addi	sp,sp,-64
-    80204780:	02813823          	sd	s0,48(sp)
-    80204784:	02113c23          	sd	ra,56(sp)
-    80204788:	04010413          	addi	s0,sp,64
+    8020477c:	fb010113          	addi	sp,sp,-80
+    80204780:	04813023          	sd	s0,64(sp)
+    80204784:	04113423          	sd	ra,72(sp)
+    80204788:	02913c23          	sd	s1,56(sp)
+    8020478c:	03213823          	sd	s2,48(sp)
+    80204790:	03313423          	sd	s3,40(sp)
+    80204794:	03413023          	sd	s4,32(sp)
+    80204798:	01513c23          	sd	s5,24(sp)
+    8020479c:	05010413          	addi	s0,sp,80
     asm volatile("csrr %0, sstatus" : "=r"(x));
-    8020478c:	100027f3          	csrr	a5,sstatus
+    802047a0:	100027f3          	csrr	a5,sstatus
     return (x & SSTATUS_SIE) != 0;
-    80204790:	0027f793          	andi	a5,a5,2
-    80204794:	02913423          	sd	s1,40(sp)
-    80204798:	03213023          	sd	s2,32(sp)
-    8020479c:	01313c23          	sd	s3,24(sp)
+    802047a4:	0027f793          	andi	a5,a5,2
     assert(!intr_get());
-    802047a0:	2c079c63          	bnez	a5,80204a78 <kernel_trap+0x2fc>
-    802047a4:	00050913          	mv	s2,a0
+    802047a8:	2e079463          	bnez	a5,80204a90 <kernel_trap+0x314>
+    802047ac:	00050913          	mv	s2,a0
     asm volatile("csrr %0, sstatus" : "=r"(x));
-    802047a8:	100027f3          	csrr	a5,sstatus
+    802047b0:	100027f3          	csrr	a5,sstatus
     if ((r_sstatus() & SSTATUS_SPP) == 0) {
-    802047ac:	1007f793          	andi	a5,a5,256
-    802047b0:	30078c63          	beqz	a5,80204ac8 <kernel_trap+0x34c>
+    802047b4:	1007f793          	andi	a5,a5,256
+    802047b8:	32078263          	beqz	a5,80204adc <kernel_trap+0x360>
     mycpu()->inkernel_trap++;
-    802047b4:	00000097          	auipc	ra,0x0
-    802047b8:	938080e7          	jalr	-1736(ra) # 802040ec <mycpu>
-    802047bc:	08052783          	lw	a5,128(a0)
-    802047c0:	0017879b          	addiw	a5,a5,1
-    802047c4:	08f52023          	sw	a5,128(a0)
+    802047bc:	00000097          	auipc	ra,0x0
+    802047c0:	930080e7          	jalr	-1744(ra) # 802040ec <mycpu>
+    802047c4:	08052783          	lw	a5,128(a0)
+    802047c8:	0017879b          	addiw	a5,a5,1
+    802047cc:	08f52023          	sw	a5,128(a0)
+    802047d0:	10002af3          	csrr	s5,sstatus
+    asm volatile("csrr %0, sepc" : "=r"(x));
+    802047d4:	14102a73          	csrr	s4,sepc
     asm volatile("csrr %0, scause" : "=r"(x));
-    802047c8:	142029f3          	csrr	s3,scause
+    802047d8:	142029f3          	csrr	s3,scause
     uint64 exception_code = cause & SCAUSE_EXCEPTION_CODE_MASK;
-    802047cc:	00199493          	slli	s1,s3,0x1
-    802047d0:	0014d493          	srli	s1,s1,0x1
+    802047dc:	00199493          	slli	s1,s3,0x1
+    802047e0:	0014d493          	srli	s1,s1,0x1
     if (cause & SCAUSE_INTERRUPT) {
-    802047d4:	1609da63          	bgez	s3,80204948 <kernel_trap+0x1cc>
+    802047e4:	1809d263          	bgez	s3,80204968 <kernel_trap+0x1ec>
         if (mycpu()->inkernel_trap > 1) {
-    802047d8:	00000097          	auipc	ra,0x0
-    802047dc:	914080e7          	jalr	-1772(ra) # 802040ec <mycpu>
-    802047e0:	08052703          	lw	a4,128(a0)
-    802047e4:	00100793          	li	a5,1
-    802047e8:	34e7c863          	blt	a5,a4,80204b38 <kernel_trap+0x3bc>
+    802047e8:	00000097          	auipc	ra,0x0
+    802047ec:	904080e7          	jalr	-1788(ra) # 802040ec <mycpu>
+    802047f0:	08052703          	lw	a4,128(a0)
+    802047f4:	00100793          	li	a5,1
+    802047f8:	34e7c863          	blt	a5,a4,80204b48 <kernel_trap+0x3cc>
         if (panicked) {
-    802047ec:	0001a797          	auipc	a5,0x1a
-    802047f0:	b5c7a783          	lw	a5,-1188(a5) # 8021e348 <panicked>
-    802047f4:	22079e63          	bnez	a5,80204a30 <kernel_trap+0x2b4>
+    802047fc:	0001a797          	auipc	a5,0x1a
+    80204800:	b4c7a783          	lw	a5,-1204(a5) # 8021e348 <panicked>
+    80204804:	24079463          	bnez	a5,80204a4c <kernel_trap+0x2d0>
         switch (exception_code) {
-    802047f8:	00500793          	li	a5,5
-    802047fc:	02f48c63          	beq	s1,a5,80204834 <kernel_trap+0xb8>
-    80204800:	00900793          	li	a5,9
-    80204804:	10f49063          	bne	s1,a5,80204904 <kernel_trap+0x188>
+    80204808:	00500793          	li	a5,5
+    8020480c:	02f48c63          	beq	s1,a5,80204844 <kernel_trap+0xc8>
+    80204810:	00900793          	li	a5,9
+    80204814:	10f49863          	bne	s1,a5,80204924 <kernel_trap+0x1a8>
                 tracef("s-external interrupt.");
-    80204808:	00000513          	li	a0,0
-    8020480c:	00000097          	auipc	ra,0x0
-    80204810:	d40080e7          	jalr	-704(ra) # 8020454c <dummy>
+    80204818:	00000513          	li	a0,0
+    8020481c:	00000097          	auipc	ra,0x0
+    80204820:	d30080e7          	jalr	-720(ra) # 8020454c <dummy>
     int irq = plic_claim();
-    80204814:	ffffe097          	auipc	ra,0xffffe
-    80204818:	f28080e7          	jalr	-216(ra) # 8020273c <plic_claim>
+    80204824:	ffffe097          	auipc	ra,0xffffe
+    80204828:	f18080e7          	jalr	-232(ra) # 8020273c <plic_claim>
     if (irq == UART0_IRQ) {
-    8020481c:	00a00793          	li	a5,10
-    80204820:	0cf50463          	beq	a0,a5,802048e8 <kernel_trap+0x16c>
+    8020482c:	00a00793          	li	a5,10
+    80204830:	0cf50c63          	beq	a0,a5,80204908 <kernel_trap+0x18c>
     if (irq)
-    80204824:	06050a63          	beqz	a0,80204898 <kernel_trap+0x11c>
+    80204834:	06050a63          	beqz	a0,802048a8 <kernel_trap+0x12c>
         plic_complete(irq);
-    80204828:	ffffe097          	auipc	ra,0xffffe
-    8020482c:	f50080e7          	jalr	-176(ra) # 80202778 <plic_complete>
-    80204830:	0680006f          	j	80204898 <kernel_trap+0x11c>
+    80204838:	ffffe097          	auipc	ra,0xffffe
+    8020483c:	f40080e7          	jalr	-192(ra) # 80202778 <plic_complete>
+    80204840:	0680006f          	j	802048a8 <kernel_trap+0x12c>
     asm volatile("csrr %0, time" : "=r"(x));
-    80204834:	c01025f3          	rdtime	a1
+    80204844:	c01025f3          	rdtime	a1
                 tracef("s-timer interrupt, cycle: %d", r_time());
-    80204838:	00000513          	li	a0,0
-    8020483c:	00000097          	auipc	ra,0x0
-    80204840:	d10080e7          	jalr	-752(ra) # 8020454c <dummy>
+    80204848:	00000513          	li	a0,0
+    8020484c:	00000097          	auipc	ra,0x0
+    80204850:	d00080e7          	jalr	-768(ra) # 8020454c <dummy>
                 set_next_timer();
-    80204844:	00000097          	auipc	ra,0x0
-    80204848:	d90080e7          	jalr	-624(ra) # 802045d4 <set_next_timer>
-    push_off();
-    8020484c:	ffffd097          	auipc	ra,0xffffd
-    80204850:	118080e7          	jalr	280(ra) # 80201964 <push_off>
-    struct cpu* c = mycpu();
     80204854:	00000097          	auipc	ra,0x0
-    80204858:	898080e7          	jalr	-1896(ra) # 802040ec <mycpu>
+    80204858:	d80080e7          	jalr	-640(ra) # 802045d4 <set_next_timer>
+    push_off();
+    8020485c:	ffffd097          	auipc	ra,0xffffd
+    80204860:	108080e7          	jalr	264(ra) # 80201964 <push_off>
+    struct cpu* c = mycpu();
+    80204864:	00000097          	auipc	ra,0x0
+    80204868:	888080e7          	jalr	-1912(ra) # 802040ec <mycpu>
     struct proc* p = c->proc;
-    8020485c:	00853483          	ld	s1,8(a0)
+    8020486c:	00853483          	ld	s1,8(a0)
     pop_off();
-    80204860:	ffffd097          	auipc	ra,0xffffd
-    80204864:	178080e7          	jalr	376(ra) # 802019d8 <pop_off>
+    80204870:	ffffd097          	auipc	ra,0xffffd
+    80204874:	168080e7          	jalr	360(ra) # 802019d8 <pop_off>
                 if (p != NULL) {  // 确保不是scheduler线程（curr_proc()为NULL）
-    80204868:	02048863          	beqz	s1,80204898 <kernel_trap+0x11c>
+    80204878:	02048863          	beqz	s1,802048a8 <kernel_trap+0x12c>
                     int saved_inkernel     = mycpu()->inkernel_trap;
-    8020486c:	00000097          	auipc	ra,0x0
-    80204870:	880080e7          	jalr	-1920(ra) # 802040ec <mycpu>
-    80204874:	08052483          	lw	s1,128(a0)
+    8020487c:	00000097          	auipc	ra,0x0
+    80204880:	870080e7          	jalr	-1936(ra) # 802040ec <mycpu>
+    80204884:	08052483          	lw	s1,128(a0)
                     mycpu()->inkernel_trap = 0;               // 临时清除inkernel_trap计数器
-    80204878:	00000097          	auipc	ra,0x0
-    8020487c:	874080e7          	jalr	-1932(ra) # 802040ec <mycpu>
-    80204880:	08052023          	sw	zero,128(a0)
+    80204888:	00000097          	auipc	ra,0x0
+    8020488c:	864080e7          	jalr	-1948(ra) # 802040ec <mycpu>
+    80204890:	08052023          	sw	zero,128(a0)
                     yield();                                  // 调用yield切换进程
-    80204884:	fffff097          	auipc	ra,0xfffff
-    80204888:	7ec080e7          	jalr	2028(ra) # 80204070 <yield>
+    80204894:	fffff097          	auipc	ra,0xfffff
+    80204898:	7dc080e7          	jalr	2012(ra) # 80204070 <yield>
                     mycpu()->inkernel_trap = saved_inkernel;  // 恢复计数器
-    8020488c:	00000097          	auipc	ra,0x0
-    80204890:	860080e7          	jalr	-1952(ra) # 802040ec <mycpu>
-    80204894:	08952023          	sw	s1,128(a0)
+    8020489c:	00000097          	auipc	ra,0x0
+    802048a0:	850080e7          	jalr	-1968(ra) # 802040ec <mycpu>
+    802048a4:	08952023          	sw	s1,128(a0)
     asm volatile("csrr %0, sstatus" : "=r"(x));
-    80204898:	100027f3          	csrr	a5,sstatus
+    802048a8:	100027f3          	csrr	a5,sstatus
     return (x & SSTATUS_SIE) != 0;
-    8020489c:	0027f793          	andi	a5,a5,2
+    802048ac:	0027f793          	andi	a5,a5,2
     assert(!intr_get());
-    802048a0:	26079663          	bnez	a5,80204b0c <kernel_trap+0x390>
+    802048b0:	26079863          	bnez	a5,80204b20 <kernel_trap+0x3a4>
     assert(mycpu()->inkernel_trap == 1);
-    802048a4:	00000097          	auipc	ra,0x0
-    802048a8:	848080e7          	jalr	-1976(ra) # 802040ec <mycpu>
-    802048ac:	08052703          	lw	a4,128(a0)
-    802048b0:	00100793          	li	a5,1
-    802048b4:	2ef71063          	bne	a4,a5,80204b94 <kernel_trap+0x418>
+    802048b4:	00000097          	auipc	ra,0x0
+    802048b8:	838080e7          	jalr	-1992(ra) # 802040ec <mycpu>
+    802048bc:	08052703          	lw	a4,128(a0)
+    802048c0:	00100793          	li	a5,1
+    802048c4:	2ef71063          	bne	a4,a5,80204ba4 <kernel_trap+0x428>
+    asm volatile("csrw sstatus, %0" : : "r"(x));
+    802048c8:	100a9073          	csrw	sstatus,s5
+    asm volatile("csrw sepc, %0" : : "r"(x));
+    802048cc:	141a1073          	csrw	sepc,s4
     mycpu()->inkernel_trap--;
-    802048b8:	00000097          	auipc	ra,0x0
-    802048bc:	834080e7          	jalr	-1996(ra) # 802040ec <mycpu>
-    802048c0:	08052783          	lw	a5,128(a0)
+    802048d0:	00000097          	auipc	ra,0x0
+    802048d4:	81c080e7          	jalr	-2020(ra) # 802040ec <mycpu>
+    802048d8:	08052783          	lw	a5,128(a0)
 }
-    802048c4:	03813083          	ld	ra,56(sp)
-    802048c8:	03013403          	ld	s0,48(sp)
+    802048dc:	04813083          	ld	ra,72(sp)
+    802048e0:	04013403          	ld	s0,64(sp)
     mycpu()->inkernel_trap--;
-    802048cc:	fff7879b          	addiw	a5,a5,-1
-    802048d0:	08f52023          	sw	a5,128(a0)
-    panic("kernel panic");
-    802048d4:	02813483          	ld	s1,40(sp)
-    802048d8:	02013903          	ld	s2,32(sp)
-    802048dc:	01813983          	ld	s3,24(sp)
+    802048e4:	fff7879b          	addiw	a5,a5,-1
+    802048e8:	08f52023          	sw	a5,128(a0)
 }
-    802048e0:	04010113          	addi	sp,sp,64
-    802048e4:	00008067          	ret
-    802048e8:	fca43423          	sd	a0,-56(s0)
+    802048ec:	03813483          	ld	s1,56(sp)
+    802048f0:	03013903          	ld	s2,48(sp)
+    802048f4:	02813983          	ld	s3,40(sp)
+    802048f8:	02013a03          	ld	s4,32(sp)
+    802048fc:	01813a83          	ld	s5,24(sp)
+    80204900:	05010113          	addi	sp,sp,80
+    80204904:	00008067          	ret
+    80204908:	faa43c23          	sd	a0,-72(s0)
         uart_intr();
-    802048ec:	ffffc097          	auipc	ra,0xffffc
-    802048f0:	b04080e7          	jalr	-1276(ra) # 802003f0 <uart_intr>
+    8020490c:	ffffc097          	auipc	ra,0xffffc
+    80204910:	ae4080e7          	jalr	-1308(ra) # 802003f0 <uart_intr>
     if (irq)
-    802048f4:	fc843503          	ld	a0,-56(s0)
+    80204914:	fb843503          	ld	a0,-72(s0)
         plic_complete(irq);
-    802048f8:	ffffe097          	auipc	ra,0xffffe
-    802048fc:	e80080e7          	jalr	-384(ra) # 80202778 <plic_complete>
-    80204900:	f99ff06f          	j	80204898 <kernel_trap+0x11c>
+    80204918:	ffffe097          	auipc	ra,0xffffe
+    8020491c:	e60080e7          	jalr	-416(ra) # 80202778 <plic_complete>
+    80204920:	f89ff06f          	j	802048a8 <kernel_trap+0x12c>
     asm volatile("mv %0, tp" : "=r"(x));
-    80204904:	00020493          	mv	s1,tp
+    80204924:	00020493          	mv	s1,tp
     return r_tp();
-    80204908:	0004849b          	sext.w	s1,s1
+    80204928:	0004849b          	sext.w	s1,s1
     struct proc *p = curr_proc();
-    8020490c:	00000097          	auipc	ra,0x0
-    80204910:	d3c080e7          	jalr	-708(ra) # 80204648 <curr_proc>
+    8020492c:	00000097          	auipc	ra,0x0
+    80204930:	d1c080e7          	jalr	-740(ra) # 80204648 <curr_proc>
     return p ? p->pid : -1;
-    80204914:	2a050a63          	beqz	a0,80204bc8 <kernel_trap+0x44c>
-    80204918:	02452703          	lw	a4,36(a0)
+    80204934:	2a050063          	beqz	a0,80204bd4 <kernel_trap+0x458>
+    80204938:	02452703          	lw	a4,36(a0)
                 errorf("unhandled interrupt: %d", cause);
-    8020491c:	00098813          	mv	a6,s3
-    80204920:	00002797          	auipc	a5,0x2
-    80204924:	9c878793          	addi	a5,a5,-1592 # 802062e8 <__func__.0>
-    80204928:	00048693          	mv	a3,s1
-    8020492c:	00001617          	auipc	a2,0x1
-    80204930:	76c60613          	addi	a2,a2,1900 # 80206098 <e_text+0x1098>
-    80204934:	01f00593          	li	a1,31
-    80204938:	00002517          	auipc	a0,0x2
-    8020493c:	81050513          	addi	a0,a0,-2032 # 80206148 <e_text+0x1148>
-    80204940:	ffffe097          	auipc	ra,0xffffe
-    80204944:	244080e7          	jalr	580(ra) # 80202b84 <printf>
+    8020493c:	00098813          	mv	a6,s3
+    80204940:	00002797          	auipc	a5,0x2
+    80204944:	9a878793          	addi	a5,a5,-1624 # 802062e8 <__func__.0>
+    80204948:	00048693          	mv	a3,s1
+    8020494c:	00001617          	auipc	a2,0x1
+    80204950:	74c60613          	addi	a2,a2,1868 # 80206098 <e_text+0x1098>
+    80204954:	01f00593          	li	a1,31
+    80204958:	00001517          	auipc	a0,0x1
+    8020495c:	7f050513          	addi	a0,a0,2032 # 80206148 <e_text+0x1148>
+    80204960:	ffffe097          	auipc	ra,0xffffe
+    80204964:	224080e7          	jalr	548(ra) # 80202b84 <printf>
                 goto kernel_panic;
-    80204948:	01413823          	sd	s4,16(sp)
-    8020494c:	0001a497          	auipc	s1,0x1a
-    80204950:	a6448493          	addi	s1,s1,-1436 # 8021e3b0 <kp_print_lock>
+    80204968:	0001a497          	auipc	s1,0x1a
+    8020496c:	a4848493          	addi	s1,s1,-1464 # 8021e3b0 <kp_print_lock>
     while (__sync_lock_test_and_set(&kp_print_lock, 1) != 0);
-    80204954:	00100713          	li	a4,1
-    80204958:	00070793          	mv	a5,a4
-    8020495c:	0cf4b7af          	amoswap.d.aq	a5,a5,(s1)
-    80204960:	fe079ce3          	bnez	a5,80204958 <kernel_trap+0x1dc>
-    80204964:	00020993          	mv	s3,tp
+    80204970:	00100713          	li	a4,1
+    80204974:	00070793          	mv	a5,a4
+    80204978:	0cf4b7af          	amoswap.d.aq	a5,a5,(s1)
+    8020497c:	fe079ce3          	bnez	a5,80204974 <kernel_trap+0x1f8>
+    80204980:	00020993          	mv	s3,tp
     push_off();
-    80204968:	ffffd097          	auipc	ra,0xffffd
-    8020496c:	ffc080e7          	jalr	-4(ra) # 80201964 <push_off>
+    80204984:	ffffd097          	auipc	ra,0xffffd
+    80204988:	fe0080e7          	jalr	-32(ra) # 80201964 <push_off>
     struct cpu* c = mycpu();
-    80204970:	fffff097          	auipc	ra,0xfffff
-    80204974:	77c080e7          	jalr	1916(ra) # 802040ec <mycpu>
+    8020498c:	fffff097          	auipc	ra,0xfffff
+    80204990:	760080e7          	jalr	1888(ra) # 802040ec <mycpu>
     struct proc* p = c->proc;
-    80204978:	00853a03          	ld	s4,8(a0)
+    80204994:	00853a03          	ld	s4,8(a0)
     return r_tp();
-    8020497c:	0009899b          	sext.w	s3,s3
+    80204998:	0009899b          	sext.w	s3,s3
     pop_off();
-    80204980:	ffffd097          	auipc	ra,0xffffd
-    80204984:	058080e7          	jalr	88(ra) # 802019d8 <pop_off>
-    80204988:	260a0863          	beqz	s4,80204bf8 <kernel_trap+0x47c>
-    8020498c:	024a2703          	lw	a4,36(s4)
+    8020499c:	ffffd097          	auipc	ra,0xffffd
+    802049a0:	03c080e7          	jalr	60(ra) # 802019d8 <pop_off>
+    802049a4:	260a0063          	beqz	s4,80204c04 <kernel_trap+0x488>
+    802049a8:	024a2703          	lw	a4,36(s4)
     errorf("=========== Kernel Panic ===========");
-    80204990:	00002797          	auipc	a5,0x2
-    80204994:	95878793          	addi	a5,a5,-1704 # 802062e8 <__func__.0>
-    80204998:	00098693          	mv	a3,s3
-    8020499c:	00001617          	auipc	a2,0x1
-    802049a0:	6fc60613          	addi	a2,a2,1788 # 80206098 <e_text+0x1098>
-    802049a4:	01f00593          	li	a1,31
-    802049a8:	00001517          	auipc	a0,0x1
-    802049ac:	7f850513          	addi	a0,a0,2040 # 802061a0 <e_text+0x11a0>
-    802049b0:	ffffe097          	auipc	ra,0xffffe
-    802049b4:	1d4080e7          	jalr	468(ra) # 80202b84 <printf>
+    802049ac:	00002797          	auipc	a5,0x2
+    802049b0:	93c78793          	addi	a5,a5,-1732 # 802062e8 <__func__.0>
+    802049b4:	00098693          	mv	a3,s3
+    802049b8:	00001617          	auipc	a2,0x1
+    802049bc:	6e060613          	addi	a2,a2,1760 # 80206098 <e_text+0x1098>
+    802049c0:	01f00593          	li	a1,31
+    802049c4:	00001517          	auipc	a0,0x1
+    802049c8:	7dc50513          	addi	a0,a0,2012 # 802061a0 <e_text+0x11a0>
+    802049cc:	ffffe097          	auipc	ra,0xffffe
+    802049d0:	1b8080e7          	jalr	440(ra) # 80202b84 <printf>
     print_sysregs(true);
-    802049b8:	00100513          	li	a0,1
-    802049bc:	ffffc097          	auipc	ra,0xffffc
-    802049c0:	214080e7          	jalr	532(ra) # 80200bd0 <print_sysregs>
+    802049d4:	00100513          	li	a0,1
+    802049d8:	ffffc097          	auipc	ra,0xffffc
+    802049dc:	1f8080e7          	jalr	504(ra) # 80200bd0 <print_sysregs>
     print_ktrapframe(ktf);
-    802049c4:	00090513          	mv	a0,s2
-    802049c8:	ffffc097          	auipc	ra,0xffffc
-    802049cc:	f90080e7          	jalr	-112(ra) # 80200958 <print_ktrapframe>
+    802049e0:	00090513          	mv	a0,s2
+    802049e4:	ffffc097          	auipc	ra,0xffffc
+    802049e8:	f74080e7          	jalr	-140(ra) # 80200958 <print_ktrapframe>
     __sync_lock_release(&kp_print_lock);
-    802049d0:	0f50000f          	fence	iorw,ow
-    802049d4:	0804b02f          	amoswap.d	zero,zero,(s1)
-    802049d8:	00020493          	mv	s1,tp
+    802049ec:	0f50000f          	fence	iorw,ow
+    802049f0:	0804b02f          	amoswap.d	zero,zero,(s1)
+    802049f4:	00020493          	mv	s1,tp
     push_off();
-    802049dc:	ffffd097          	auipc	ra,0xffffd
-    802049e0:	f88080e7          	jalr	-120(ra) # 80201964 <push_off>
+    802049f8:	ffffd097          	auipc	ra,0xffffd
+    802049fc:	f6c080e7          	jalr	-148(ra) # 80201964 <push_off>
     struct cpu* c = mycpu();
-    802049e4:	fffff097          	auipc	ra,0xfffff
-    802049e8:	708080e7          	jalr	1800(ra) # 802040ec <mycpu>
+    80204a00:	fffff097          	auipc	ra,0xfffff
+    80204a04:	6ec080e7          	jalr	1772(ra) # 802040ec <mycpu>
     struct proc* p = c->proc;
-    802049ec:	00853903          	ld	s2,8(a0)
+    80204a08:	00853903          	ld	s2,8(a0)
     return r_tp();
-    802049f0:	0004849b          	sext.w	s1,s1
+    80204a0c:	0004849b          	sext.w	s1,s1
     pop_off();
-    802049f4:	ffffd097          	auipc	ra,0xffffd
-    802049f8:	fe4080e7          	jalr	-28(ra) # 802019d8 <pop_off>
-    802049fc:	1c090263          	beqz	s2,80204bc0 <kernel_trap+0x444>
-    80204a00:	02492703          	lw	a4,36(s2)
+    80204a10:	ffffd097          	auipc	ra,0xffffd
+    80204a14:	fc8080e7          	jalr	-56(ra) # 802019d8 <pop_off>
+    80204a18:	1a090a63          	beqz	s2,80204bcc <kernel_trap+0x450>
+    80204a1c:	02492703          	lw	a4,36(s2)
     panic("kernel panic");
-    80204a04:	05c00813          	li	a6,92
-    80204a08:	00001797          	auipc	a5,0x1
-    80204a0c:	68078793          	addi	a5,a5,1664 # 80206088 <e_text+0x1088>
-    80204a10:	00048693          	mv	a3,s1
-    80204a14:	00000617          	auipc	a2,0x0
-    80204a18:	61460613          	addi	a2,a2,1556 # 80205028 <e_text+0x28>
-    80204a1c:	01f00593          	li	a1,31
-    80204a20:	00001517          	auipc	a0,0x1
-    80204a24:	7c050513          	addi	a0,a0,1984 # 802061e0 <e_text+0x11e0>
-    80204a28:	ffffe097          	auipc	ra,0xffffe
-    80204a2c:	e5c080e7          	jalr	-420(ra) # 80202884 <__panic>
-    80204a30:	01413823          	sd	s4,16(sp)
-    80204a34:	00020493          	mv	s1,tp
+    80204a20:	05e00813          	li	a6,94
+    80204a24:	00001797          	auipc	a5,0x1
+    80204a28:	66478793          	addi	a5,a5,1636 # 80206088 <e_text+0x1088>
+    80204a2c:	00048693          	mv	a3,s1
+    80204a30:	00000617          	auipc	a2,0x0
+    80204a34:	5f860613          	addi	a2,a2,1528 # 80205028 <e_text+0x28>
+    80204a38:	01f00593          	li	a1,31
+    80204a3c:	00001517          	auipc	a0,0x1
+    80204a40:	7a450513          	addi	a0,a0,1956 # 802061e0 <e_text+0x11e0>
+    80204a44:	ffffe097          	auipc	ra,0xffffe
+    80204a48:	e40080e7          	jalr	-448(ra) # 80202884 <__panic>
+    80204a4c:	00020493          	mv	s1,tp
     return r_tp();
-    80204a38:	0004849b          	sext.w	s1,s1
+    80204a50:	0004849b          	sext.w	s1,s1
     struct proc *p = curr_proc();
-    80204a3c:	00000097          	auipc	ra,0x0
-    80204a40:	c0c080e7          	jalr	-1012(ra) # 80204648 <curr_proc>
+    80204a54:	00000097          	auipc	ra,0x0
+    80204a58:	bf4080e7          	jalr	-1036(ra) # 80204648 <curr_proc>
     return p ? p->pid : -1;
-    80204a44:	1a050263          	beqz	a0,80204be8 <kernel_trap+0x46c>
-    80204a48:	02452703          	lw	a4,36(a0)
+    80204a5c:	18050c63          	beqz	a0,80204bf4 <kernel_trap+0x478>
+    80204a60:	02452703          	lw	a4,36(a0)
             panic("other CPU has panicked");
-    80204a4c:	02d00813          	li	a6,45
-    80204a50:	00001797          	auipc	a5,0x1
-    80204a54:	63878793          	addi	a5,a5,1592 # 80206088 <e_text+0x1088>
-    80204a58:	00048693          	mv	a3,s1
-    80204a5c:	00000617          	auipc	a2,0x0
-    80204a60:	5cc60613          	addi	a2,a2,1484 # 80205028 <e_text+0x28>
-    80204a64:	01f00593          	li	a1,31
-    80204a68:	00001517          	auipc	a0,0x1
-    80204a6c:	6a850513          	addi	a0,a0,1704 # 80206110 <e_text+0x1110>
-    80204a70:	ffffe097          	auipc	ra,0xffffe
-    80204a74:	e14080e7          	jalr	-492(ra) # 80202884 <__panic>
-    80204a78:	01413823          	sd	s4,16(sp)
-    80204a7c:	00020493          	mv	s1,tp
-    80204a80:	0004849b          	sext.w	s1,s1
+    80204a64:	02e00813          	li	a6,46
+    80204a68:	00001797          	auipc	a5,0x1
+    80204a6c:	62078793          	addi	a5,a5,1568 # 80206088 <e_text+0x1088>
+    80204a70:	00048693          	mv	a3,s1
+    80204a74:	00000617          	auipc	a2,0x0
+    80204a78:	5b460613          	addi	a2,a2,1460 # 80205028 <e_text+0x28>
+    80204a7c:	01f00593          	li	a1,31
+    80204a80:	00001517          	auipc	a0,0x1
+    80204a84:	69050513          	addi	a0,a0,1680 # 80206110 <e_text+0x1110>
+    80204a88:	ffffe097          	auipc	ra,0xffffe
+    80204a8c:	dfc080e7          	jalr	-516(ra) # 80202884 <__panic>
+    80204a90:	00020493          	mv	s1,tp
+    80204a94:	0004849b          	sext.w	s1,s1
     struct proc *p = curr_proc();
-    80204a84:	00000097          	auipc	ra,0x0
-    80204a88:	bc4080e7          	jalr	-1084(ra) # 80204648 <curr_proc>
+    80204a98:	00000097          	auipc	ra,0x0
+    80204a9c:	bb0080e7          	jalr	-1104(ra) # 80204648 <curr_proc>
     return p ? p->pid : -1;
-    80204a8c:	14050663          	beqz	a0,80204bd8 <kernel_trap+0x45c>
-    80204a90:	02452703          	lw	a4,36(a0)
+    80204aa0:	14050263          	beqz	a0,80204be4 <kernel_trap+0x468>
+    80204aa4:	02452703          	lw	a4,36(a0)
     assert(!intr_get());
-    80204a94:	00001897          	auipc	a7,0x1
-    80204a98:	3f488893          	addi	a7,a7,1012 # 80205e88 <e_text+0xe88>
-    80204a9c:	01800813          	li	a6,24
+    80204aa8:	00001897          	auipc	a7,0x1
+    80204aac:	3e088893          	addi	a7,a7,992 # 80205e88 <e_text+0xe88>
+    80204ab0:	01800813          	li	a6,24
     assert(!intr_get());
-    80204aa0:	00001797          	auipc	a5,0x1
-    80204aa4:	5e878793          	addi	a5,a5,1512 # 80206088 <e_text+0x1088>
-    80204aa8:	00048693          	mv	a3,s1
-    80204aac:	00000617          	auipc	a2,0x0
-    80204ab0:	57c60613          	addi	a2,a2,1404 # 80205028 <e_text+0x28>
-    80204ab4:	01f00593          	li	a1,31
-    80204ab8:	00000517          	auipc	a0,0x0
-    80204abc:	57850513          	addi	a0,a0,1400 # 80205030 <e_text+0x30>
-    80204ac0:	ffffe097          	auipc	ra,0xffffe
-    80204ac4:	dc4080e7          	jalr	-572(ra) # 80202884 <__panic>
-    80204ac8:	00020493          	mv	s1,tp
-    80204acc:	0004849b          	sext.w	s1,s1
+    80204ab4:	00001797          	auipc	a5,0x1
+    80204ab8:	5d478793          	addi	a5,a5,1492 # 80206088 <e_text+0x1088>
+    80204abc:	00048693          	mv	a3,s1
+    80204ac0:	00000617          	auipc	a2,0x0
+    80204ac4:	56860613          	addi	a2,a2,1384 # 80205028 <e_text+0x28>
+    80204ac8:	01f00593          	li	a1,31
+    80204acc:	00000517          	auipc	a0,0x0
+    80204ad0:	56450513          	addi	a0,a0,1380 # 80205030 <e_text+0x30>
+    80204ad4:	ffffe097          	auipc	ra,0xffffe
+    80204ad8:	db0080e7          	jalr	-592(ra) # 80202884 <__panic>
+    80204adc:	00020493          	mv	s1,tp
+    80204ae0:	0004849b          	sext.w	s1,s1
     struct proc *p = curr_proc();
-    80204ad0:	00000097          	auipc	ra,0x0
-    80204ad4:	b78080e7          	jalr	-1160(ra) # 80204648 <curr_proc>
+    80204ae4:	00000097          	auipc	ra,0x0
+    80204ae8:	b64080e7          	jalr	-1180(ra) # 80204648 <curr_proc>
     return p ? p->pid : -1;
-    80204ad8:	10050c63          	beqz	a0,80204bf0 <kernel_trap+0x474>
-    80204adc:	02452703          	lw	a4,36(a0)
+    80204aec:	10050863          	beqz	a0,80204bfc <kernel_trap+0x480>
+    80204af0:	02452703          	lw	a4,36(a0)
         errorf("kerneltrap: not from supervisor mode");
-    80204ae0:	00002797          	auipc	a5,0x2
-    80204ae4:	80878793          	addi	a5,a5,-2040 # 802062e8 <__func__.0>
-    80204ae8:	00048693          	mv	a3,s1
-    80204aec:	00001617          	auipc	a2,0x1
-    80204af0:	5ac60613          	addi	a2,a2,1452 # 80206098 <e_text+0x1098>
-    80204af4:	01f00593          	li	a1,31
-    80204af8:	00001517          	auipc	a0,0x1
-    80204afc:	5a850513          	addi	a0,a0,1448 # 802060a0 <e_text+0x10a0>
-    80204b00:	ffffe097          	auipc	ra,0xffffe
-    80204b04:	084080e7          	jalr	132(ra) # 80202b84 <printf>
+    80204af4:	00001797          	auipc	a5,0x1
+    80204af8:	7f478793          	addi	a5,a5,2036 # 802062e8 <__func__.0>
+    80204afc:	00048693          	mv	a3,s1
+    80204b00:	00001617          	auipc	a2,0x1
+    80204b04:	59860613          	addi	a2,a2,1432 # 80206098 <e_text+0x1098>
+    80204b08:	01f00593          	li	a1,31
+    80204b0c:	00001517          	auipc	a0,0x1
+    80204b10:	59450513          	addi	a0,a0,1428 # 802060a0 <e_text+0x10a0>
+    80204b14:	ffffe097          	auipc	ra,0xffffe
+    80204b18:	070080e7          	jalr	112(ra) # 80202b84 <printf>
         goto kernel_panic;
-    80204b08:	e41ff06f          	j	80204948 <kernel_trap+0x1cc>
-    80204b0c:	01413823          	sd	s4,16(sp)
-    80204b10:	00020493          	mv	s1,tp
-    80204b14:	0004849b          	sext.w	s1,s1
+    80204b1c:	e4dff06f          	j	80204968 <kernel_trap+0x1ec>
+    80204b20:	00020493          	mv	s1,tp
+    80204b24:	0004849b          	sext.w	s1,s1
     struct proc *p = curr_proc();
-    80204b18:	00000097          	auipc	ra,0x0
-    80204b1c:	b30080e7          	jalr	-1232(ra) # 80204648 <curr_proc>
+    80204b28:	00000097          	auipc	ra,0x0
+    80204b2c:	b20080e7          	jalr	-1248(ra) # 80204648 <curr_proc>
     return p ? p->pid : -1;
-    80204b20:	0a050863          	beqz	a0,80204bd0 <kernel_trap+0x454>
-    80204b24:	02452703          	lw	a4,36(a0)
+    80204b30:	0a050663          	beqz	a0,80204bdc <kernel_trap+0x460>
+    80204b34:	02452703          	lw	a4,36(a0)
     assert(!intr_get());
-    80204b28:	00001897          	auipc	a7,0x1
-    80204b2c:	36088893          	addi	a7,a7,864 # 80205e88 <e_text+0xe88>
-    80204b30:	04a00813          	li	a6,74
-    80204b34:	f6dff06f          	j	80204aa0 <kernel_trap+0x324>
+    80204b38:	00001897          	auipc	a7,0x1
+    80204b3c:	35088893          	addi	a7,a7,848 # 80205e88 <e_text+0xe88>
+    80204b40:	04b00813          	li	a6,75
+    80204b44:	f71ff06f          	j	80204ab4 <kernel_trap+0x338>
             print_sysregs(true);
-    80204b38:	00100513          	li	a0,1
-    80204b3c:	ffffc097          	auipc	ra,0xffffc
-    80204b40:	094080e7          	jalr	148(ra) # 80200bd0 <print_sysregs>
+    80204b48:	00100513          	li	a0,1
+    80204b4c:	ffffc097          	auipc	ra,0xffffc
+    80204b50:	084080e7          	jalr	132(ra) # 80200bd0 <print_sysregs>
             print_ktrapframe(ktf);
-    80204b44:	00090513          	mv	a0,s2
-    80204b48:	ffffc097          	auipc	ra,0xffffc
-    80204b4c:	e10080e7          	jalr	-496(ra) # 80200958 <print_ktrapframe>
-    80204b50:	00020493          	mv	s1,tp
-    80204b54:	0004849b          	sext.w	s1,s1
+    80204b54:	00090513          	mv	a0,s2
+    80204b58:	ffffc097          	auipc	ra,0xffffc
+    80204b5c:	e00080e7          	jalr	-512(ra) # 80200958 <print_ktrapframe>
+    80204b60:	00020493          	mv	s1,tp
+    80204b64:	0004849b          	sext.w	s1,s1
     struct proc *p = curr_proc();
-    80204b58:	00000097          	auipc	ra,0x0
-    80204b5c:	af0080e7          	jalr	-1296(ra) # 80204648 <curr_proc>
+    80204b68:	00000097          	auipc	ra,0x0
+    80204b6c:	ae0080e7          	jalr	-1312(ra) # 80204648 <curr_proc>
     return p ? p->pid : -1;
-    80204b60:	08050063          	beqz	a0,80204be0 <kernel_trap+0x464>
-    80204b64:	02452703          	lw	a4,36(a0)
+    80204b70:	06050e63          	beqz	a0,80204bec <kernel_trap+0x470>
+    80204b74:	02452703          	lw	a4,36(a0)
             errorf("nested kerneltrap");
-    80204b68:	00001797          	auipc	a5,0x1
-    80204b6c:	78078793          	addi	a5,a5,1920 # 802062e8 <__func__.0>
-    80204b70:	00048693          	mv	a3,s1
-    80204b74:	00001617          	auipc	a2,0x1
-    80204b78:	52460613          	addi	a2,a2,1316 # 80206098 <e_text+0x1098>
-    80204b7c:	01f00593          	li	a1,31
-    80204b80:	00001517          	auipc	a0,0x1
-    80204b84:	56050513          	addi	a0,a0,1376 # 802060e0 <e_text+0x10e0>
-    80204b88:	ffffe097          	auipc	ra,0xffffe
-    80204b8c:	ffc080e7          	jalr	-4(ra) # 80202b84 <printf>
+    80204b78:	00001797          	auipc	a5,0x1
+    80204b7c:	77078793          	addi	a5,a5,1904 # 802062e8 <__func__.0>
+    80204b80:	00048693          	mv	a3,s1
+    80204b84:	00001617          	auipc	a2,0x1
+    80204b88:	51460613          	addi	a2,a2,1300 # 80206098 <e_text+0x1098>
+    80204b8c:	01f00593          	li	a1,31
+    80204b90:	00001517          	auipc	a0,0x1
+    80204b94:	55050513          	addi	a0,a0,1360 # 802060e0 <e_text+0x10e0>
+    80204b98:	ffffe097          	auipc	ra,0xffffe
+    80204b9c:	fec080e7          	jalr	-20(ra) # 80202b84 <printf>
             goto kernel_panic;
-    80204b90:	db9ff06f          	j	80204948 <kernel_trap+0x1cc>
-    80204b94:	01413823          	sd	s4,16(sp)
-    80204b98:	00020493          	mv	s1,tp
-    80204b9c:	0004849b          	sext.w	s1,s1
+    80204ba0:	dc9ff06f          	j	80204968 <kernel_trap+0x1ec>
+    80204ba4:	00020493          	mv	s1,tp
+    80204ba8:	0004849b          	sext.w	s1,s1
     struct proc *p = curr_proc();
-    80204ba0:	00000097          	auipc	ra,0x0
-    80204ba4:	aa8080e7          	jalr	-1368(ra) # 80204648 <curr_proc>
+    80204bac:	00000097          	auipc	ra,0x0
+    80204bb0:	a9c080e7          	jalr	-1380(ra) # 80204648 <curr_proc>
     return p ? p->pid : -1;
-    80204ba8:	04050c63          	beqz	a0,80204c00 <kernel_trap+0x484>
-    80204bac:	02452703          	lw	a4,36(a0)
+    80204bb4:	04050c63          	beqz	a0,80204c0c <kernel_trap+0x490>
+    80204bb8:	02452703          	lw	a4,36(a0)
     assert(mycpu()->inkernel_trap == 1);
-    80204bb0:	00001897          	auipc	a7,0x1
-    80204bb4:	5d088893          	addi	a7,a7,1488 # 80206180 <e_text+0x1180>
-    80204bb8:	04b00813          	li	a6,75
-    80204bbc:	ee5ff06f          	j	80204aa0 <kernel_trap+0x324>
-    80204bc0:	fff00713          	li	a4,-1
-    80204bc4:	e41ff06f          	j	80204a04 <kernel_trap+0x288>
-    80204bc8:	fff00713          	li	a4,-1
-    80204bcc:	d51ff06f          	j	8020491c <kernel_trap+0x1a0>
-    80204bd0:	fff00713          	li	a4,-1
-    80204bd4:	f55ff06f          	j	80204b28 <kernel_trap+0x3ac>
-    80204bd8:	fff00713          	li	a4,-1
-    80204bdc:	eb9ff06f          	j	80204a94 <kernel_trap+0x318>
-    80204be0:	fff00713          	li	a4,-1
-    80204be4:	f85ff06f          	j	80204b68 <kernel_trap+0x3ec>
-    80204be8:	fff00713          	li	a4,-1
-    80204bec:	e61ff06f          	j	80204a4c <kernel_trap+0x2d0>
-    80204bf0:	fff00713          	li	a4,-1
-    80204bf4:	eedff06f          	j	80204ae0 <kernel_trap+0x364>
-    80204bf8:	fff00713          	li	a4,-1
-    80204bfc:	d95ff06f          	j	80204990 <kernel_trap+0x214>
-    80204c00:	fff00713          	li	a4,-1
-    80204c04:	fadff06f          	j	80204bb0 <kernel_trap+0x434>
+    80204bbc:	00001897          	auipc	a7,0x1
+    80204bc0:	5c488893          	addi	a7,a7,1476 # 80206180 <e_text+0x1180>
+    80204bc4:	04c00813          	li	a6,76
+    80204bc8:	eedff06f          	j	80204ab4 <kernel_trap+0x338>
+    80204bcc:	fff00713          	li	a4,-1
+    80204bd0:	e51ff06f          	j	80204a20 <kernel_trap+0x2a4>
+    80204bd4:	fff00713          	li	a4,-1
+    80204bd8:	d65ff06f          	j	8020493c <kernel_trap+0x1c0>
+    80204bdc:	fff00713          	li	a4,-1
+    80204be0:	f59ff06f          	j	80204b38 <kernel_trap+0x3bc>
+    80204be4:	fff00713          	li	a4,-1
+    80204be8:	ec1ff06f          	j	80204aa8 <kernel_trap+0x32c>
+    80204bec:	fff00713          	li	a4,-1
+    80204bf0:	f89ff06f          	j	80204b78 <kernel_trap+0x3fc>
+    80204bf4:	fff00713          	li	a4,-1
+    80204bf8:	e6dff06f          	j	80204a64 <kernel_trap+0x2e8>
+    80204bfc:	fff00713          	li	a4,-1
+    80204c00:	ef5ff06f          	j	80204af4 <kernel_trap+0x378>
+    80204c04:	fff00713          	li	a4,-1
+    80204c08:	da5ff06f          	j	802049ac <kernel_trap+0x230>
+    80204c0c:	fff00713          	li	a4,-1
+    80204c10:	fadff06f          	j	80204bbc <kernel_trap+0x440>
 
-0000000080204c08 <set_kerneltrap>:
+0000000080204c14 <set_kerneltrap>:
 void set_kerneltrap() {
-    80204c08:	ffffb797          	auipc	a5,0xffffb
-    80204c0c:	41c78793          	addi	a5,a5,1052 # 80200024 <kernel_trap_entry>
-    80204c10:	0037f713          	andi	a4,a5,3
-    80204c14:	00071663          	bnez	a4,80204c20 <set_kerneltrap+0x18>
-    80204c18:	10579073          	csrw	stvec,a5
-    80204c1c:	00008067          	ret
-    80204c20:	ff010113          	addi	sp,sp,-16
-    80204c24:	00813023          	sd	s0,0(sp)
-    80204c28:	00113423          	sd	ra,8(sp)
-    80204c2c:	01010413          	addi	s0,sp,16
-    80204c30:	00000097          	auipc	ra,0x0
-    80204c34:	a60080e7          	jalr	-1440(ra) # 80204690 <set_kerneltrap.part.0>
+    80204c14:	ffffb797          	auipc	a5,0xffffb
+    80204c18:	41078793          	addi	a5,a5,1040 # 80200024 <kernel_trap_entry>
+    80204c1c:	0037f713          	andi	a4,a5,3
+    80204c20:	00071663          	bnez	a4,80204c2c <set_kerneltrap+0x18>
+    80204c24:	10579073          	csrw	stvec,a5
+    80204c28:	00008067          	ret
+    80204c2c:	ff010113          	addi	sp,sp,-16
+    80204c30:	00813023          	sd	s0,0(sp)
+    80204c34:	00113423          	sd	ra,8(sp)
+    80204c38:	01010413          	addi	s0,sp,16
+    80204c3c:	00000097          	auipc	ra,0x0
+    80204c40:	a54080e7          	jalr	-1452(ra) # 80204690 <set_kerneltrap.part.0>
 
-0000000080204c38 <trap_init>:
+0000000080204c44 <trap_init>:
     assert(IS_ALIGNED((uint64)kernel_trap_entry, 4));
-    80204c38:	ffffb797          	auipc	a5,0xffffb
-    80204c3c:	3ec78793          	addi	a5,a5,1004 # 80200024 <kernel_trap_entry>
-    80204c40:	0037f713          	andi	a4,a5,3
-    80204c44:	00071663          	bnez	a4,80204c50 <trap_init+0x18>
+    80204c44:	ffffb797          	auipc	a5,0xffffb
+    80204c48:	3e078793          	addi	a5,a5,992 # 80200024 <kernel_trap_entry>
+    80204c4c:	0037f713          	andi	a4,a5,3
+    80204c50:	00071663          	bnez	a4,80204c5c <trap_init+0x18>
     asm volatile("csrw stvec, %0" : : "r"(x));
-    80204c48:	10579073          	csrw	stvec,a5
-    80204c4c:	00008067          	ret
+    80204c54:	10579073          	csrw	stvec,a5
+    80204c58:	00008067          	ret
     w_stvec((uint64)kernel_trap_entry);  // DIRECT
 }
 
 // set up to take exceptions and traps while in the kernel.
 void trap_init() {
-    80204c50:	ff010113          	addi	sp,sp,-16
-    80204c54:	00813023          	sd	s0,0(sp)
-    80204c58:	00113423          	sd	ra,8(sp)
-    80204c5c:	01010413          	addi	s0,sp,16
-    80204c60:	00000097          	auipc	ra,0x0
-    80204c64:	a30080e7          	jalr	-1488(ra) # 80204690 <set_kerneltrap.part.0>
+    80204c5c:	ff010113          	addi	sp,sp,-16
+    80204c60:	00813023          	sd	s0,0(sp)
+    80204c64:	00113423          	sd	ra,8(sp)
+    80204c68:	01010413          	addi	s0,sp,16
+    80204c6c:	00000097          	auipc	ra,0x0
+    80204c70:	a24080e7          	jalr	-1500(ra) # 80204690 <set_kerneltrap.part.0>
 
-0000000080204c68 <swtch>:
+0000000080204c74 <swtch>:
 # Save current registers in old. Load from new.
 
 
 .globl swtch
 swtch:
         sd ra, 0(a0)
-    80204c68:	00153023          	sd	ra,0(a0)
+    80204c74:	00153023          	sd	ra,0(a0)
         sd sp, 8(a0)
-    80204c6c:	00253423          	sd	sp,8(a0)
+    80204c78:	00253423          	sd	sp,8(a0)
         sd s0, 16(a0)
-    80204c70:	00853823          	sd	s0,16(a0)
+    80204c7c:	00853823          	sd	s0,16(a0)
         sd s1, 24(a0)
-    80204c74:	00953c23          	sd	s1,24(a0)
+    80204c80:	00953c23          	sd	s1,24(a0)
         sd s2, 32(a0)
-    80204c78:	03253023          	sd	s2,32(a0)
+    80204c84:	03253023          	sd	s2,32(a0)
         sd s3, 40(a0)
-    80204c7c:	03353423          	sd	s3,40(a0)
+    80204c88:	03353423          	sd	s3,40(a0)
         sd s4, 48(a0)
-    80204c80:	03453823          	sd	s4,48(a0)
+    80204c8c:	03453823          	sd	s4,48(a0)
         sd s5, 56(a0)
-    80204c84:	03553c23          	sd	s5,56(a0)
+    80204c90:	03553c23          	sd	s5,56(a0)
         sd s6, 64(a0)
-    80204c88:	05653023          	sd	s6,64(a0)
+    80204c94:	05653023          	sd	s6,64(a0)
         sd s7, 72(a0)
-    80204c8c:	05753423          	sd	s7,72(a0)
+    80204c98:	05753423          	sd	s7,72(a0)
         sd s8, 80(a0)
-    80204c90:	05853823          	sd	s8,80(a0)
+    80204c9c:	05853823          	sd	s8,80(a0)
         sd s9, 88(a0)
-    80204c94:	05953c23          	sd	s9,88(a0)
+    80204ca0:	05953c23          	sd	s9,88(a0)
         sd s10, 96(a0)
-    80204c98:	07a53023          	sd	s10,96(a0)
+    80204ca4:	07a53023          	sd	s10,96(a0)
         sd s11, 104(a0)
-    80204c9c:	07b53423          	sd	s11,104(a0)
+    80204ca8:	07b53423          	sd	s11,104(a0)
 
         ld ra, 0(a1)
-    80204ca0:	0005b083          	ld	ra,0(a1)
+    80204cac:	0005b083          	ld	ra,0(a1)
         ld sp, 8(a1)
-    80204ca4:	0085b103          	ld	sp,8(a1)
+    80204cb0:	0085b103          	ld	sp,8(a1)
         ld s0, 16(a1)
-    80204ca8:	0105b403          	ld	s0,16(a1)
+    80204cb4:	0105b403          	ld	s0,16(a1)
         ld s1, 24(a1)
-    80204cac:	0185b483          	ld	s1,24(a1)
+    80204cb8:	0185b483          	ld	s1,24(a1)
         ld s2, 32(a1)
-    80204cb0:	0205b903          	ld	s2,32(a1)
+    80204cbc:	0205b903          	ld	s2,32(a1)
         ld s3, 40(a1)
-    80204cb4:	0285b983          	ld	s3,40(a1)
+    80204cc0:	0285b983          	ld	s3,40(a1)
         ld s4, 48(a1)
-    80204cb8:	0305ba03          	ld	s4,48(a1)
+    80204cc4:	0305ba03          	ld	s4,48(a1)
         ld s5, 56(a1)
-    80204cbc:	0385ba83          	ld	s5,56(a1)
+    80204cc8:	0385ba83          	ld	s5,56(a1)
         ld s6, 64(a1)
-    80204cc0:	0405bb03          	ld	s6,64(a1)
+    80204ccc:	0405bb03          	ld	s6,64(a1)
         ld s7, 72(a1)
-    80204cc4:	0485bb83          	ld	s7,72(a1)
+    80204cd0:	0485bb83          	ld	s7,72(a1)
         ld s8, 80(a1)
-    80204cc8:	0505bc03          	ld	s8,80(a1)
+    80204cd4:	0505bc03          	ld	s8,80(a1)
         ld s9, 88(a1)
-    80204ccc:	0585bc83          	ld	s9,88(a1)
+    80204cd8:	0585bc83          	ld	s9,88(a1)
         ld s10, 96(a1)
-    80204cd0:	0605bd03          	ld	s10,96(a1)
+    80204cdc:	0605bd03          	ld	s10,96(a1)
         ld s11, 104(a1)
-    80204cd4:	0685bd83          	ld	s11,104(a1)
+    80204ce0:	0685bd83          	ld	s11,104(a1)
 
-    80204cd8:	00008067          	ret
+    80204ce4:	00008067          	ret
 	...
